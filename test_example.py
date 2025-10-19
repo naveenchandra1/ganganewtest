@@ -9,9 +9,9 @@ class TestExample(unittest.TestCase):
         self.assertEqual(result, 4)
     
     def test_failing_example(self):
-        """This test will fail"""
+        """This test will now pass"""
         result = 5 + 5
-        self.assertEqual(result, 11, "Expected 11 but got 10")
+        self.assertEqual(result, 10, "Expected 10")
     
     def test_subtraction(self):
         """This test will pass"""
