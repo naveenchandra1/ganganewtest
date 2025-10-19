@@ -20,8 +20,7 @@ jobs:
       - name: Run tests
         id: run-tests
         run: |
-          python -m pytest test_example.py -v --tb=short > test_output.txt 2>&1 || true
-          if python -m pytest test_example.py --tb=short; then
+          if python -m unittest test_example.py; then
             echo "TEST_RESULT=success" >> $GITHUB_ENV
           else
             echo "TEST_RESULT=failed" >> $GITHUB_ENV
