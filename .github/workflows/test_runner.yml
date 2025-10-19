@@ -1,0 +1,44 @@
+name: Test Runner on PR
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      
+      - name: Run tests
+        id: run-tests
+        run: |
+          python -m pytest test_example.py -v --tb=short > test_output.txt 2>&1 || true
+          if python -m pytest test_example.py --tb=short; then
+            echo "TEST_RESULT=success" >> $GITHUB_ENV
+          else
+            echo "TEST_RESULT=failed" >> $GITHUB_ENV
+          fi
+        continue-on-error: true
+      
+      - name: Check test results and print message
+        run: |
+          if [ "$TEST_RESULT" == "success" ]; then
+            echo "✅ SUCCESS: All tests passed!"
+          else
+            echo "❌ TESTS FAILED"
+            echo "Build ID: ${{ github.run_id }}"
+            echo "Build Number: ${{ github.run_number }}"
+            echo "Workflow Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+      
+      - name: Fail workflow if tests failed
+        if: env.TEST_RESULT == 'failed'
+        run: exit 1
